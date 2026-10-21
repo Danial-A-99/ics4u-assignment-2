@@ -2,10 +2,17 @@ import { drawGraph } from "@ics4u-assignment-02/utils";
 import type { Coefficients } from "./types";
 
 const canvas = document.getElementById("graph") as HTMLCanvasElement;
-const a = document.getElementById("a") as HTMLCanvasElement;
-const b = document.getElementById("b") as HTMLCanvasElement;
-const c = document.getElementById("c") as HTMLCanvasElement;
-const d = document.getElementById("d") as HTMLCanvasElement;
+const form = document.getElementById("form") as HTMLFormElement;
+
+form.addEventListener("submit", (event: Event) => {
+  event.preventDefault();
+  const formData = new FormData(form);
+  const a = Number(formData.get("a"));
+  const b = Number(formData.get("b"));
+  const c = Number(formData.get("c"));
+  const d = Number(formData.get("d"));
+  console.log(a, b, c, d);
+});
 
 drawGraph(
   { a: 0, b: 0, c: 0, d: 0 },
@@ -43,4 +50,12 @@ const removeFromHistory = ({ a, b, c, d }: Coefficients) => {
 
 const deriveFunction = ({ a, b, c, d }: Coefficients) => {
   return "Derived Version Of Function";
+};
+
+const maxPoint = ({ a, b, c, d }: Coefficients) => {
+  return "Max Point";
+};
+
+const minPoint = ({ a, b, c, d }: Coefficients) => {
+  return "Min Point";
 };
