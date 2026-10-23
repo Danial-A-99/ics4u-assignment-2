@@ -3,16 +3,7 @@ import type { Coefficients } from "./types";
 
 const canvas = document.getElementById("graph") as HTMLCanvasElement;
 const form = document.getElementById("form") as HTMLFormElement;
-
-form.addEventListener("submit", (event: Event) => {
-  event.preventDefault();
-  const formData = new FormData(form);
-  const a = Number(formData.get("a"));
-  const b = Number(formData.get("b"));
-  const c = Number(formData.get("c"));
-  const d = Number(formData.get("d"));
-  console.log(a, b, c, d);
-});
+const history = document.getElementById("history");
 
 drawGraph(
   { a: 0, b: 0, c: 0, d: 0 },
@@ -41,7 +32,20 @@ const checkDuplicates = ({ a, b, c, d }: Coefficients) => {
 };
 
 const addToHistory = ({ a, b, c, d }: Coefficients) => {
-  return "HTML";
+  const historyItem = document.createElement("historyItem");
+  historyItem.className =
+    "flex border border-slate-700 gap-25 px-12 py-3 rounded-xl text-sm font-mono bg-slate-800/40 hover:bg-slate-800/70";
+  historyItem.innerHTML = `
+  <p>${a}</p>
+  <p>${b}</p>
+  <p>${c}</p>
+  <p>${d}</p>
+  <div>
+  <button type="submit"
+  class="ml-2 border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl px-4 text-xs font-bold font-mono h-9">Delete</button>
+  <div>
+  `;
+  history?.append(historyItem);
 };
 
 const removeFromHistory = ({ a, b, c, d }: Coefficients) => {
@@ -59,3 +63,14 @@ const maxPoint = ({ a, b, c, d }: Coefficients) => {
 const minPoint = ({ a, b, c, d }: Coefficients) => {
   return "Min Point";
 };
+
+form.addEventListener("submit", (event: Event) => {
+  event.preventDefault();
+  const formData = new FormData(form);
+  const a = Number(formData.get("a"));
+  const b = Number(formData.get("b"));
+  const c = Number(formData.get("c"));
+  const d = Number(formData.get("d"));
+  console.log(a, b, c, d);
+  addToHistory({ a, b, c, d });
+});
