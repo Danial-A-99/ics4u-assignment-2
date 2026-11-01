@@ -33,11 +33,11 @@ const checkDuplicates = ({ a, b, c, d }: Coefficients) => {
   return "true/false duplicate";
 };
 
-const addToHistory = ({ a, b, c, d }: Coefficients) => {
+const addToHistory = ({ a, b, c, d }: Coefficients, locationInList: number) => {
   const historyItem = document.createElement("historyItem");
   historyItem.className = "flex items-center gap-2";
   historyItem.innerHTML = `
-  <button class="flex-1 text-left p-3 rounded-xl bg-slate-800/40 border border-slate-700 hover:bg-slate-800/70 transition">
+  <button id="numbers-${locationInList}" class="flex-1 text-left p-3 rounded-xl bg-slate-800/40 border border-slate-700 hover:bg-slate-800/70 transition">
     <div class="grid grid-cols-4 font-mono text-slate-200 text-sm">
       <span class="text-center">${a}</span>
       <span class="text-center">${b}</span>
@@ -45,7 +45,7 @@ const addToHistory = ({ a, b, c, d }: Coefficients) => {
       <span class="text-center">${d}</span>
     </div>
   </button>
-  <button class="px-3 py-2 text-xs font-medium rounded-lg border border-red-500/30 text-red-400 bg-red-500/10 hover:bg-red-500/20 hover:text-red-300 transition">Delete</button>
+  <button id="delete-${locationInList}" class="px-3 py-2 text-xs font-medium rounded-lg border border-red-500/30 text-red-400 bg-red-500/10 hover:bg-red-500/20 hover:text-red-300 transition">Delete</button>
   `;
   history?.append(historyItem);
 };
@@ -76,7 +76,8 @@ form.addEventListener("submit", (event: Event) => {
   const existsInHistory = valinputs.some((item) => item.a === a && item.b === b && item.c === c && item.d === d);
   if (!existsInHistory) {
     valinputs = [...valinputs, { a, b, c, d }];
-    addToHistory({ a, b, c, d });
+    const location = valinputs.findIndex((item) => item.a === a && item.b === b && item.c === c && item.d === d);
+    addToHistory({ a, b, c, d }, location);
   }
   console.log(a, b, c, d);
   console.log(valinputs);
