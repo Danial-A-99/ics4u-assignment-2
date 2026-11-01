@@ -35,6 +35,7 @@ const checkDuplicates = ({ a, b, c, d }: Coefficients) => {
 
 const addToHistory = ({ a, b, c, d }: Coefficients, locationInList: number) => {
   const historyItem = document.createElement("historyItem");
+  historyItem.id = `item-${locationInList}`;
   historyItem.className = "flex items-center gap-2";
   historyItem.innerHTML = `
   <button id="numbers-${locationInList}" class="flex-1 text-left p-3 rounded-xl bg-slate-800/40 border border-slate-700 hover:bg-slate-800/70 transition">
@@ -95,10 +96,24 @@ form.addEventListener("input", (event: Event) => {
 
 history.addEventListener("click", (event: Event) => {
   event.preventDefault();
-  // const historyData = new (history);
-  // const a = Number(historyData.get("a"));
-  // const b = Number(historyData.get("b"));
-  // const c = Number(historyData.get("c"));
-  // const d = Number(historyData.get("d"));
-  // console.log(a, b, c, d);
+  const values = event.target as HTMLElement;
+  const theid = Number(values.id.replace("numbers-", ""));
+  console.log(theid);
+  console.log(values);
+  const lesnombres = valinputs[theid];
+  console.log(lesnombres);
+  const a = lesnombres.a;
+  const b = lesnombres.b;
+  const c = lesnombres.c;
+  const d = lesnombres.d;
+  console.log(a, b, c, d);
+  const ainput = document.querySelector('input[name="a"]') as HTMLInputElement;
+  const binput = document.querySelector('input[name="b"]') as HTMLInputElement;
+  const cinput = document.querySelector('input[name="c"]') as HTMLInputElement;
+  const dinput = document.querySelector('input[name="d"]') as HTMLInputElement;
+  ainput.value = String(a);
+  binput.value = String(b);
+  cinput.value = String(c);
+  dinput.value = String(d);
+  drawGraph({ a, b, c, d }, {}, canvas);
 });
