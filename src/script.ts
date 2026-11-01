@@ -4,7 +4,6 @@ import type { Coefficients } from "./types";
 const canvas = document.getElementById("graph") as HTMLCanvasElement;
 const form = document.getElementById("form") as HTMLFormElement;
 const history = document.getElementById("history") as HTMLDivElement;
-const delbutton = document.getElementById("deleteButton");
 let valinputs: Coefficients[] = [];
 
 drawGraph(
@@ -18,10 +17,31 @@ drawGraph(
 );
 
 const cardanoMethod = ({ a, b, c, d }: Coefficients) => {
+  const p = (3 * a * c - b ** 2) / (3 * a ** 2);
+  const q = (27 * a ** 2 * d - 9 * a * b * c + 2 * b ** 3) / (27 * a ** 3);
+  const discriminant = (q / 2) ** 2 + (p / 3) ** 3;
+  const disc = document.getElementById("discriminant") as HTMLSpanElement;
+  const pParam = document.getElementById("p") as HTMLSpanElement;
+  const qParam = document.getElementById("q") as HTMLSpanElement;
+  disc.textContent = String(discriminant);
+  pParam.textContent = String(p);
+  qParam.textContent = String(q);
+
   return "Num of Roots";
 };
 
 const trigonometricMethod = ({ a, b, c, d }: Coefficients) => {
+  const p = (3 * a * c - b ** 2) / (3 * a ** 2);
+  const q = (27 * a ** 2 * d - 9 * a * b * c + 2 * b ** 3) / (27 * a ** 3);
+  const theta = Math.acos(-q / (2 * Math.sqrt(-1 * (p / 3) ** 3))) / 3;
+  const discriminant = (q / 2) ** 2 + (p / 3) ** 3;
+  if (discriminant <= 0) {
+    const x1 = 2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a);
+    const x2 = 2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a);
+    const x3 = 2 * Math.sqrt(-p / 3) * Math.cos(theta + (4 * Math.PI) / 3) - b / (3 * a);
+    console.log(x1, x2, x3);
+    //const 
+  }
   return "Num of Roots";
 };
 
@@ -55,8 +75,27 @@ const removeFromHistory = ({ a, b, c, d }: Coefficients) => {
   return "HTML without that part";
 };
 
-const deriveFunction = ({ a, b, c, d }: Coefficients) => {
-  return "Derived Version Of Function";
+const writeFunction = ({ a, b, c, d }: Coefficients) => {
+  const writtenversion = ` ${a}x³ + ${b}x² + ${c}x + ${d} `
+    .replace("+ 0x³", "")
+    .replace("+ 0x²", "")
+    .replace("+ 0x", "")
+    .replaceAll("+ 0 ", "")
+    .replaceAll("+ -", "- ");
+  const ogfunction = document.getElementById("equation") as HTMLSpanElement;
+  ogfunction.textContent = writtenversion;
+};
+
+const firstDerivative = ({ a, b, c, d }: Coefficients) => {
+  const newequation = `${a * 3}x² + ${b * 2}x + ${c}`.replace("+ 0x", "").replace("+ 0", "").replaceAll("+ -", "- ");
+  const derivative = document.getElementById("first-derivative") as HTMLSpanElement;
+  derivative.textContent = newequation;
+};
+
+const secondDerivative = ({ a, b, c, d }: Coefficients) => {
+  const newequation = `${a * 3 * 2}x + ${b * 2}`.replace("+ 0", "").replaceAll("+ -", "- ");
+  const derivative2 = document.getElementById("second-derivative") as HTMLSpanElement;
+  derivative2.textContent = newequation;
 };
 
 const maxPoint = ({ a, b, c, d }: Coefficients) => {
@@ -92,6 +131,11 @@ form.addEventListener("input", (event: Event) => {
   const c = Number(formData.get("c"));
   const d = Number(formData.get("d"));
   drawGraph({ a, b, c, d }, {}, canvas);
+  cardanoMethod({ a, b, c, d });
+  writeFunction({ a, b, c, d });
+  firstDerivative({ a, b, c, d });
+  secondDerivative({ a, b, c, d });
+  trigonometricMethod({ a, b, c, d });
 });
 
 history.addEventListener("click", (event: Event) => {
