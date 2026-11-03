@@ -16,64 +16,84 @@ drawGraph(
   canvas,
 );
 
-const p = ({a,b,c,d}:Coefficients):number => {
+const pVal = ({a,b,c,d}:Coefficients):number => {
   return Number(((3 * a * c - b ** 2) / (3 * a ** 2)).toFixed(4));
 }
 
-const q = ({a,b,c,d}:Coefficients):number => {
+const qVal = ({a,b,c,d}:Coefficients):number => {
   return Number(((27 * a ** 2 * d - 9 * a * b * c + 2 * b ** 3) / (27 * a ** 3)).toFixed(4));
 }
 
 const discriminant = ({a,b,c,d}:Coefficients) => {
-  return Number(((q({a,b,c,d}) / 2) ** 2 + (p({a,b,c,d}) / 3) ** 3).toFixed(4));
+  return Number(((qVal({a,b,c,d}) / 2) ** 2 + (pVal({a,b,c,d}) / 3) ** 3).toFixed(4));
 }
 const cardanoMethod = ({ a, b, c, d }: Coefficients) => {
-  const disc = document.getElementById("discriminant") as HTMLSpanElement;
-  const pParam = document.getElementById("p") as HTMLSpanElement;
-  const qParam = document.getElementById("q") as HTMLSpanElement;
-  disc.textContent = String(discriminant({a,b,c,d}));
-  pParam.textContent = String(p({a,b,c,d}));
-  qParam.textContent = String(q({a,b,c,d}));
-
-  return "Num of Roots";
+  const q = qVal({a,b,c,d});
+  const disc = discriminant({a,b,c,d});
+  const u = Math.cbrt(-q/2 + Math.sqrt(disc));
+  const v = Math.cbrt(-q/2 - Math.sqrt(disc));
+  const root = ((u + v) - (-b)/(3*a)).toFixed(4)
+  const r1 = document.getElementById("root-one") as HTMLSpanElement;
+  const r2 = document.getElementById("root-two") as HTMLSpanElement;
+  const r3 = document.getElementById("root-three") as HTMLSpanElement;
+  r1.textContent = `x: ${root} | y: Imaginary`
+  r2.textContent = `x: Imaginary | y: Imaginary`
+  r3.textContent = `x: Imaginary | y: Imaginary`
+  const typeARoots = document.getElementById("roots") as HTMLSpanElement;
+  typeARoots.textContent = "1 Real Root, 2 Complex Roots"
+  const factoredForm = document.getElementById("factored") as HTMLSpanElement;
+  factoredForm.textContent = "No real factorization"
 };
 
 const trigonometricMethod = ({ a, b, c, d }: Coefficients) => {
-  const p = (3 * a * c - b ** 2) / (3 * a ** 2);
-  const q = (27 * a ** 2 * d - 9 * a * b * c + 2 * b ** 3) / (27 * a ** 3);
+  const p = pVal({a,b,c,d});
+  const q = qVal({a,b,c,d});
   const theta = Math.acos(-q / (2 * Math.sqrt(-1 * (p / 3) ** 3))) / 3;
-  if (discriminant({a,b,c,d}) <= 0) {
-    const x1 = (2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a)).toFixed(4);
-    const x2 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
-    const x3 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (4 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
-    const factoredForm = document.getElementById("factored") as HTMLSpanElement;
-    const r1 = document.getElementById("root-one") as HTMLSpanElement;
-    const r2 = document.getElementById("root-two") as HTMLSpanElement;
-    const r3 = document.getElementById("root-three") as HTMLSpanElement;
-    const typeARoots = document.getElementById("roots") as HTMLSpanElement;
-    if (x1 === x2 && x1 != x3){
-      factoredForm.textContent = `(x - ${x1})^2 + (x - ${x3})`.replace("- -","- ")
-      typeARoots.textContent = `Double Real Roots, Single Real Root`
-    } else if (x1 === x3 && x1 != x2){
-      factoredForm.textContent = `(x - ${x1})^2 + (x - ${x2})`.replace("- -","- ")
-      typeARoots.textContent = `Double Real Roots, Single Real Root`
-    } else if (x2 === x3 && x2 != x1){
-      factoredForm.textContent = `(x - ${x2})^2 + (x - ${x1})`.replace("- -","- ")
-      typeARoots.textContent = `Double Real Roots, Single Real Root`
-    } else if (x1 != x3 && x1 != x2){
-      factoredForm.textContent = `(x - ${x1}) + (x - ${x2}) (x - ${x3})`.replace("- -","- ")
-      typeARoots.textContent = `3 Distinct Real Roots`
-    } else {
-      factoredForm.textContent = `(x - ${x1})^3`.replace("- -","- ")
-      typeARoots.textContent = `Triple Real Roots`
-    }
-    r1.textContent = `x: ${x1} | y: 0.0000`
-    r2.textContent = `x: ${x2} | y: 0.0000`
-    r3.textContent = `x: ${x3} | y: 0.0000`
-    return [x1,x2,x3]
+  const x1 = (2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a)).toFixed(4);
+  const x2 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
+  const x3 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (4 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
+  const factoredForm = document.getElementById("factored") as HTMLSpanElement;
+  const r1 = document.getElementById("root-one") as HTMLSpanElement;
+  const r2 = document.getElementById("root-two") as HTMLSpanElement;
+  const r3 = document.getElementById("root-three") as HTMLSpanElement;
+  const typeARoots = document.getElementById("roots") as HTMLSpanElement;
+  if (x1 == x2 && x1 != x3){
+    factoredForm.textContent = `(x - ${x1})^2 (x - ${x3})`.replace("- -","- ")
+    typeARoots.textContent = `Double Real Roots, Single Real Root`
+  } else if (x1 == x3 && x1 != x2){
+    factoredForm.textContent = `(x - ${x1})^2 (x - ${x2})`.replace("- -","- ")
+    typeARoots.textContent = `Double Real Roots, Single Real Root`
+  } else if (x2 == x3 && x2 != x1){
+    factoredForm.textContent = `(x - ${x2})^2 (x - ${x1})`.replace("- -","- ")
+    typeARoots.textContent = `Double Real Roots, Single Real Root`
+  } else if (x1 != x3 && x1 != x2){
+    factoredForm.textContent = `(x - ${x1}) (x - ${x2}) (x - ${x3})`.replace("- -","- ")
+    typeARoots.textContent = `3 Distinct Real Roots`
+  } else {
+    factoredForm.textContent = `(x - ${x1})^3`.replace("- -","- ")
+    typeARoots.textContent = `Triple Real Roots`
   }
-  return "Num of Roots";
+  r1.textContent = `x: ${x1} | y: 0.0000`
+  r2.textContent = `x: ${x2} | y: 0.0000`
+  r3.textContent = `x: ${x3} | y: 0.0000`
+  return [x1,x2,x3]
 };
+
+const addData = ({a,b,c,d}:Coefficients) => {
+  const disc = discriminant({a,b,c,d});
+  if (disc <= 0){
+    trigonometricMethod({a,b,c,d})
+  } else if (disc > 0){
+    cardanoMethod({a,b,c,d})
+  }
+  minMaxPoints({a,b,c,d})
+  const pParam = document.getElementById("p") as HTMLSpanElement;
+  const qParam = document.getElementById("q") as HTMLSpanElement;
+  const discriminantParam = document.getElementById("discriminant") as HTMLSpanElement;
+  pParam.textContent = String(pVal({a,b,c,d}))
+  qParam.textContent = String(qVal({a,b,c,d}))
+  discriminantParam.textContent = String(discriminant({a,b,c,d}))
+}
 
 const getNumOfRoots = ({ a, b, c, d }: Coefficients) => {
   return 1;
@@ -131,15 +151,12 @@ const secondDerivative = ({ a, b, c, d }: Coefficients) => {
 const minMaxPoints = ({a,b,c,d}:Coefficients) => {
   const minPoint = document.getElementById("minimum") as HTMLSpanElement;
   const maxPoint = document.getElementById("maximum") as HTMLSpanElement;
-  const newA = a*3
-  const newB = b*2
-  const newC = c
-  const disc = newB**2 - 4 * newA * newC
+  const disc = (b*2)**2 - 4 * (a*3) * c
   if (disc >= 0){
-    const root1 = (-newB + Math.sqrt(newB**2 - 4 * newA * newC))/(2*newA)
-    const root2 = (-newB - Math.sqrt(newB**2 - 4 * newA * newC))/(2*newA)
-    const y1 = a*root1**3 + b*root1**2 + c*root1 + d
-    const y2 = a*root2**3 + b*root2**2 + c*root2 + d
+    const root1 = Number(((-(b*2) + Math.sqrt(disc))/(2*(a*3))).toFixed(4))
+    const root2 = Number(((-(b*2) - Math.sqrt(disc))/(2*(a*3))).toFixed(4))
+    const y1 = Number((a*root1**3 + b*root1**2 + c*root1 + d).toFixed(4))
+    const y2 = Number((a*root2**3 + b*root2**2 + c*root2 + d).toFixed(4))
     if (y1 > y2){
       maxPoint.textContent = `x: ${root1} | y: ${y1}`
       minPoint.textContent = `x: ${root2} | y: ${y2}`
@@ -174,14 +191,11 @@ form.addEventListener("input", (event: Event) => {
   const b = Number(formData.get("b"));
   const c = Number(formData.get("c"));
   const d = Number(formData.get("d"));
-  cardanoMethod({ a, b, c, d });
   writeEquation({ a, b, c, d });
   firstDerivative({ a, b, c, d });
   secondDerivative({ a, b, c, d });
-  const roots = trigonometricMethod({ a, b, c, d });
-  trigonometricMethod({ a, b, c, d })
-  minMaxPoints({a,b,c,d})
-  drawGraph({ a, b, c, d }, {r1:{x:roots[0],y:0},r2:{x:roots[1],y:0},r3:{x:roots[2],y:0}}, canvas);
+  addData({a,b,c,d})
+  drawGraph({ a, b, c, d }, {}, canvas);
 });
 
 history.addEventListener("click", (event: Event) => {
