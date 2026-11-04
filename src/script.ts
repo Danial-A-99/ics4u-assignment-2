@@ -1,10 +1,10 @@
 import { drawGraph } from "@ics4u-assignment-02/utils";
-import type { Coefficients } from "./types";
+import type { Coefficients, History } from "./types";
 
 const canvas = document.getElementById("graph") as HTMLCanvasElement;
 const form = document.getElementById("form") as HTMLFormElement;
 const history = document.getElementById("history") as HTMLDivElement;
-const inputList: Coefficients[] = [];
+const inputList: History = [];
 
 drawGraph(
   { a: 0, b: 0, c: 0, d: 0 },
@@ -47,14 +47,23 @@ const cardanoMethod = ({ a, b, c, d }: Coefficients, p: number, q: number, discr
 
 const trigonometricMethod = ({ a, b, c, d }: Coefficients, p: number, q: number) => {
   const theta = Math.acos(-q / (2 * Math.sqrt(-1 * (p / 3) ** 3))) / 3;
-  const x1 = (2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a)).toFixed(4);
-  const x2 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
-  const x3 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (4 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
+  let x1 = (2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a)).toFixed(4);
+  let x2 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
+  let x3 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (4 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
   const factoredForm = document.getElementById("factored") as HTMLSpanElement;
   const r1 = document.getElementById("root-one") as HTMLSpanElement;
   const r2 = document.getElementById("root-two") as HTMLSpanElement;
   const r3 = document.getElementById("root-three") as HTMLSpanElement;
   const typeARoots = document.getElementById("roots") as HTMLSpanElement;
+  if (x1 === "-0.0000"){
+    x1 = "0.0000"
+  }
+  if (x2 === "-0.0000"){
+    x2 = "0.0000"
+  }
+  if (x3 === "-0.0000"){
+    x3 = "0.0000"
+  }
   if (x1 === x2 && x1 !== x3) {
     factoredForm.textContent = `(x - ${x1})^2 (x - ${x3})`.replace("- -", "- ");
     typeARoots.textContent = `Double Real Roots, Single Real Root`;
@@ -225,7 +234,7 @@ history.addEventListener("click", (event: Event) => {
     const numbersInHistory = document.getElementById(`numbers-${theId}`) as HTMLDivElement;
     numbersInHistory?.remove();
     delButton?.remove();
-    inputList[theId] = { a: 0, b: 0, c: 0, d: 0 }; // replacing instead of deleting
+    inputList[theId] = { a: 0, b: 0, c: 0, d: 0 };
   } else {
     console.log(theId);
     console.log(values);
