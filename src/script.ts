@@ -26,11 +26,11 @@ const qVal = ({ a, b, c, d }: Coefficients): number => {
   return Number((27 * a ** 2 * d - 9 * a * b * c + 2 * b ** 3) / (27 * a ** 3));
 };
 
-const discriminant = ({ a, b, c, d }: Coefficients) => {
+const discriminant = ({ a, b, c, d }: Coefficients):number => {
   return Number((qVal({ a, b, c, d }) / 2) ** 2 + (pVal({ a, b, c, d }) / 3) ** 3);
 };
 
-const cardanoMethod = ({ a, b, c, d }: Coefficients, _p: number, q: number, discriminant: number) => {
+const cardanoMethod = ({ a, b, c, d }: Coefficients, p: number, q: number, discriminant: number):string[] => {
   const u = Math.cbrt(-q / 2 + Math.sqrt(discriminant));
   const v = Math.cbrt(-q / 2 - Math.sqrt(discriminant));
   const root = (u + v - b / (3 * a)).toFixed(4);
@@ -47,7 +47,7 @@ const cardanoMethod = ({ a, b, c, d }: Coefficients, _p: number, q: number, disc
   return [root, root, root];
 };
 
-const trigonometricMethod = ({ a, b, c, d }: Coefficients, p: number, q: number) => {
+const trigonometricMethod = ({ a, b, c, d }: Coefficients, p: number, q: number):string[] => {
   const theta = Math.acos(-q / (2 * Math.sqrt(-1 * (p / 3) ** 3))) / 3;
   let x1 = (2 * Math.sqrt(-p / 3) * Math.cos(theta) - b / (3 * a)).toFixed(4);
   let x2 = (2 * Math.sqrt(-p / 3) * Math.cos(theta + (2 * Math.PI) / 3) - b / (3 * a)).toFixed(4);
@@ -134,6 +134,9 @@ const minMaxPoints = ({ a, b, c, d }: Coefficients) => {
 };
 
 const addData = ({ a, b, c, d }: Coefficients) => {
+  const pParam = document.getElementById("p") as HTMLSpanElement;
+  const qParam = document.getElementById("q") as HTMLSpanElement;
+  const discriminantParam = document.getElementById("discriminant") as HTMLSpanElement;
   const values = { a, b, c, d };
   const disc = discriminant(values);
   const p = pVal(values);
@@ -151,9 +154,6 @@ const addData = ({ a, b, c, d }: Coefficients) => {
   firstDerivative(values);
   secondDerivative(values);
   drawGraph(values, { r1: { x: Number(r[0]), y: 0 }, r2: { x: Number(r[1]), y: 0 }, r3: { x: Number(r[2]), y: 0 } }, canvas);
-  const pParam = document.getElementById("p") as HTMLSpanElement;
-  const qParam = document.getElementById("q") as HTMLSpanElement;
-  const discriminantParam = document.getElementById("discriminant") as HTMLSpanElement;
   pParam.textContent = String(p.toFixed(4));
   qParam.textContent = String(q.toFixed(4));
   discriminantParam.textContent = String(disc.toFixed(4));
