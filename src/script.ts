@@ -6,6 +6,8 @@ const form = document.getElementById("form") as HTMLFormElement;
 const history = document.getElementById("history") as HTMLDivElement;
 const inputList: History = [];
 
+history.textContent = "No saved equations yet.";
+
 drawGraph(
   { a: 0, b: 0, c: 0, d: 0 },
   {
@@ -55,14 +57,14 @@ const trigonometricMethod = ({ a, b, c, d }: Coefficients, p: number, q: number)
   const r2 = document.getElementById("root-two") as HTMLSpanElement;
   const r3 = document.getElementById("root-three") as HTMLSpanElement;
   const typeARoots = document.getElementById("roots") as HTMLSpanElement;
-  if (x1 === "-0.0000"){
-    x1 = "0.0000"
+  if (x1 === "-0.0000") {
+    x1 = "0.0000";
   }
-  if (x2 === "-0.0000"){
-    x2 = "0.0000"
+  if (x2 === "-0.0000") {
+    x2 = "0.0000";
   }
-  if (x3 === "-0.0000"){
-    x3 = "0.0000"
+  if (x3 === "-0.0000") {
+    x3 = "0.0000";
   }
   if (x1 === x2 && x1 !== x3) {
     factoredForm.textContent = `(x - ${x1})^2 (x - ${x3})`.replace("- -", "- ");
@@ -176,6 +178,7 @@ const addToHistory = ({ a, b, c, d }: Coefficients, locationInList: number) => {
 };
 
 form.addEventListener("submit", (event: Event) => {
+  history.textContent = "";
   event.preventDefault();
   const formData = new FormData(form);
   const a = Number(formData.get("a"));
@@ -232,8 +235,8 @@ history.addEventListener("click", (event: Event) => {
   if (delButton) {
     const theId = Number(delButton.id.replace("delete-", ""));
     const numbersInHistory = document.getElementById(`numbers-${theId}`) as HTMLDivElement;
-    numbersInHistory?.remove();
-    delButton?.remove();
+    numbersInHistory.remove();
+    delButton.remove();
     inputList[theId] = { a: 0, b: 0, c: 0, d: 0 };
   } else {
     console.log(theId);
