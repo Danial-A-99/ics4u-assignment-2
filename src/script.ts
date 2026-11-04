@@ -30,7 +30,7 @@ const discriminant = ({ a, b, c, d }: Coefficients) => {
   return Number((qVal({ a, b, c, d }) / 2) ** 2 + (pVal({ a, b, c, d }) / 3) ** 3);
 };
 
-const cardanoMethod = ({ a, b, c, d }: Coefficients, p: number, q: number, discriminant: number) => {
+const cardanoMethod = ({ a, b, c, d }: Coefficients, _p: number, q: number, discriminant: number) => {
   const u = Math.cbrt(-q / 2 + Math.sqrt(discriminant));
   const v = Math.cbrt(-q / 2 - Math.sqrt(discriminant));
   const root = (u + v - b / (3 * a)).toFixed(4);
@@ -178,7 +178,6 @@ const addToHistory = ({ a, b, c, d }: Coefficients, locationInList: number) => {
 };
 
 form.addEventListener("submit", (event: Event) => {
-  history.textContent = "";
   event.preventDefault();
   const formData = new FormData(form);
   const a = Number(formData.get("a"));
